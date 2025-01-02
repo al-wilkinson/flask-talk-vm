@@ -14,16 +14,26 @@ provider "aws" {
 }
 
 resource "aws_key_pair" "deployer" {
-  key_name = "deployer-key"
+  key_name = "flask-demo-key"
   public_key = file("~/.ssh/flask-demo-vm.pub")
 }
 
 resource "aws_instance" "demo-vm" {
-  ami           = "ami-830c94e3"
+  ami           = "ami-07d9cf938edb0739b"
   instance_type = "t2.micro"
   key_name = aws_key_pair.deployer.key_name
 
   tags = {
     Name = "FlaskDemo"
   }
+}
+
+output "key_pair" {
+  description = "My key pair"
+  value = aws_key_pair.deployer.public_key
+}
+
+output "public_ip_address" {
+  description = "Public IP address of our instance"
+  value = aws_instance.demo-vm.public_ip
 }
